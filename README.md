@@ -1,1 +1,1 @@
-# WeatherQRScanner
+# NFLStatsQRScanner
