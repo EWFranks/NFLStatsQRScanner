@@ -12,11 +12,13 @@ dependencies:
     sdk: flutter
   cupertino_icons: ^1.0.8
   qr_code_scanner: ^1.0.1  # Added QR code scanner package
+  permission_handler: ^10.2.0  # Added permission handler package
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
   flutter_lints: ^4.0.0  # This can be updated to ^5.0.0 if needed
+  camera: ^0.10.0  # Check for the latest version
 
 flutter:
   uses-material-design: true
