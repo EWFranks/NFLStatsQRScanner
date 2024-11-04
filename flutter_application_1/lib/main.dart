@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'QR_Scanner.dart'; // Ensure this imports your QR code scanner
 
 void main() {
   runApp(const MyApp());
@@ -32,7 +33,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
   static const List<Widget> _widgetOptions = <Widget>[
     StatsScreen(),
-    QRScannerScreen(),
+    QRCodeScanner(), // Update this to use your QR code scanner widget
     PlusMinusScreen(),
   ];
 
@@ -89,20 +90,8 @@ class StatsScreen extends StatelessWidget {
   }
 }
 
-class QRScannerScreen extends StatelessWidget {
-  const QRScannerScreen({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return const Center(
-      child: Text(
-        'QR Scanner Screen',
-        style: TextStyle(fontSize: 24),
-      ),
-    );
-  }
-}
-
+// QR code scanner will be imported from QR_Scanner.dart
+// No need to define QRScannerScreen separately
 class PlusMinusScreen extends StatelessWidget {
   const PlusMinusScreen({super.key});
 

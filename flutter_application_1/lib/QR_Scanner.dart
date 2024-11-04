@@ -32,13 +32,12 @@ class _QRCodeScannerState extends State<QRCodeScanner> {
       ),
       body: Column(
         children: <Widget>[
-          // QR Code Scanner View
           Expanded(
             flex: 4,
             child: QRView(
               key: qrKey,
               onQRViewCreated: _onQRViewCreated,
-              overlay: QrScannerOverlayShape( // Custom overlay for better UX
+              overlay: QrScannerOverlayShape(
                 borderColor: Colors.blue,
                 borderRadius: 10,
                 borderLength: 30,
@@ -47,7 +46,6 @@ class _QRCodeScannerState extends State<QRCodeScanner> {
               ),
             ),
           ),
-          // Displaying the scanned result
           Expanded(
             flex: 1,
             child: Center(
