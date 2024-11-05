@@ -11,7 +11,7 @@ dependencies:
   flutter:
     sdk: flutter
   cupertino_icons: ^1.0.8
-  qr_code_scanner: ^1.0.1  # Added QR code scanner package
+  mobile_scanner: ^3.0.0 # Check for the latest version on pub.dev
   permission_handler: ^10.2.0  # Added permission handler package
 
 dev_dependencies:

@@ -1,5 +1,5 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.nflstatqrscanner"> <!-- Adjust the package name accordingly -->
+    package="com.example.flutter_application_1"> <!-- Adjust the package name accordingly -->
 
     <application
         android:label="NFL Stat QR Scanner"
