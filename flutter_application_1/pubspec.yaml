@@ -1,6 +1,6 @@
 name: flutter_application_1
 description: "A new Flutter project."
-publish_to: 'none' # Remove this line if you wish to publish to pub.dev
+
 
 version: 1.0.0+1
 
@@ -11,14 +11,15 @@ dependencies:
   flutter:
     sdk: flutter
   cupertino_icons: ^1.0.8
-  mobile_scanner: ^3.0.0 # Check for the latest version on pub.dev
-  permission_handler: ^10.2.0  # Added permission handler package
+  mobile_scanner: ^3.0.0 
+  permission_handler: ^10.2.0  
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  flutter_lints: ^4.0.0  # This can be updated to ^5.0.0 if needed
-  camera: ^0.10.0  # Check for the latest version
+  flutter_lints: ^4.0.0  
+  camera: ^0.10.0  
+  http: ^0.13.5  
 
 flutter:
   uses-material-design: true
