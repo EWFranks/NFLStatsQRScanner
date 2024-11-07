@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:mobile_scanner/mobile_scanner.dart'; // Import the mobile scanner package
+import 'package:mobile_scanner/mobile_scanner.dart';
+import 'nfl_api_service.dart';
 
 void main() {
   runApp(const MyApp());
@@ -33,7 +34,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
   static const List<Widget> _widgetOptions = <Widget>[
     StatsScreen(),
-    QRCodeScanner(), // Include the QR code scanner here
+    QRCodeScanner(),
     PlusMinusScreen(),
   ];
 
@@ -112,7 +113,33 @@ class QRCodeView extends StatefulWidget {
 }
 
 class _QRCodeViewState extends State<QRCodeView> {
+  final GlobalKey qrKey = GlobalKey(debugLabel: 'QR');
   String scannedText = '';
+  String? teamStats;
+  final NflApiService nflApiService = NflApiService();
+
+  // Updated _onDetect method
+  void _onDetect(BarcodeCapture barcodeCapture) async {
+    if (barcodeCapture.barcodes.isNotEmpty) {
+      final barcode = barcodeCapture.barcodes.first;
+      if (barcode.rawValue != null) {
+        setState(() {
+          scannedText = barcode.rawValue!;
+        });
+
+        // Call the API with the scanned team name or ID
+        final apiResult = await nflApiService.getTeamStats(scannedText);
+
+        if (apiResult != null) {
+          setState(() {
+            teamStats = 'Wins: ${apiResult['wins']}, Losses: ${apiResult['losses']}, Next Game: ${apiResult['next_game_date']}';
+          });
+        } else {
+          print('Failed to fetch team data');
+        }
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -120,25 +147,21 @@ class _QRCodeViewState extends State<QRCodeView> {
       children: [
         Expanded(
           child: MobileScanner(
-            onDetect: (BarcodeCapture barcodeCapture) {
-              final List<Barcode> barcodes = barcodeCapture.barcodes;
-              for (var barcode in barcodes) {
-                setState(() {
-                  scannedText = barcode.rawValue ?? 'Unknown';
-                });
-                // Optionally, show a dialog or take other actions
-                // showDialog or navigate as needed
-              }
-            },
+            onDetect: _onDetect,
             fit: BoxFit.cover,
           ),
         ),
         Padding(
           padding: const EdgeInsets.all(16.0),
-          child: Text(
-            'Scanned Code: $scannedText',
-            style: const TextStyle(fontSize: 24),
-          ),
+          child: teamStats != null
+              ? Text(
+                  teamStats!,
+                  style: const TextStyle(fontSize: 24),
+                )
+              : const Text(
+                  'Scan a code to see team statistics',
+                  style: TextStyle(fontSize: 18),
+                ),
         ),
       ],
     );
