@@ -117,9 +117,24 @@ class _QRCodeViewState extends State<QRCodeView> {
   String scannedText = '';
   String? teamStats;
   final NflApiService nflApiService = NflApiService();
+  
+  // Timestamp of the last scan to enforce cooldown
+  DateTime? lastScanTime;
 
-  // Updated _onDetect method
+  // Updated _onDetect method with 30-second cooldown
   void _onDetect(BarcodeCapture barcodeCapture) async {
+    final now = DateTime.now();
+
+    // If cooldown period has not passed, do nothing
+    if (lastScanTime != null && now.difference(lastScanTime!) < Duration(seconds: 15)) {
+      print('Cooldown active. Please wait...');
+      return;
+    }
+
+    // Set the last scan time immediately to start the cooldown
+    lastScanTime = now;
+
+    // Proceed with scanning and API call
     if (barcodeCapture.barcodes.isNotEmpty) {
       final barcode = barcodeCapture.barcodes.first;
       if (barcode.rawValue != null) {
