@@ -1,65 +1,50 @@
 import 'package:flutter/material.dart';
-import 'package:mobile_scanner/mobile_scanner.dart';
-import 'nfl_api_service.dart';
+import 'TeamData.dart';  
 
-class QRCodeScanner extends StatefulWidget {
-  const QRCodeScanner({super.key});
+class Stats extends StatelessWidget {
+  final TeamData teamData;  // Pass team data 
 
-  @override
-  State<QRCodeScanner> createState() => _QRCodeScannerState();
-}
-
-class _QRCodeScannerState extends State<QRCodeScanner> {
-  String? scannedText;
-  final NflApiService nflApiService = NflApiService();
-  String? teamStats;
-
-  void _onDetect(BarcodeCapture barcodeCapture) async {
-    // Get the list of barcodes detected in the capture
-    final List<Barcode> barcodes = barcodeCapture.barcodes;
-
-    // Loop through each detected barcode
-    for (var barcode in barcodes) {
-      if (barcode.rawValue != null) {
-        setState(() {
-          scannedText = barcode.rawValue!;
-        });
-
-        // Call the API with the scanned text (team ID or name)
-        final apiResult = await nflApiService.getTeamStats(scannedText!);
-
-        // Update the UI with team stats if data is received
-        if (apiResult != null) {
-          setState(() {
-            teamStats = 'Wins: ${apiResult['wins']}, Losses: ${apiResult['losses']}, Next Game: ${apiResult['next_game_date']}';
-          });
-        } else {
-          print('Failed to fetch team data');
-        }
-      }
-    }
-  }
+  const Stats({Key? key, required this.teamData}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('QR Code Scanner'),
+        title: Text('${teamData.name} Stats'),
       ),
-      body: Column(
-        children: [
-          Expanded(
-            child: MobileScanner(
-              onDetect: _onDetect, // Corrected _onDetect function
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Image.network(teamData.logoUrl),  
+            SizedBox(height: 16),
+            Text(
+              'Team: ${teamData.name}',
+              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
             ),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: teamStats != null
-                ? Text(teamStats!)
-                : const Text('Scan a code to see team statistics'),
-          ),
-        ],
+            Text(
+              'Abbreviation: ${teamData.abbreviation}',
+              style: TextStyle(fontSize: 16),
+            ),
+            Text(
+              'Location: ${teamData.location}',
+              style: TextStyle(fontSize: 16),
+            ),
+            Text(
+              'Record: ${teamData.recordSummary}',
+              style: TextStyle(fontSize: 16),
+            ),
+            Text(
+              'Standing: ${teamData.standingSummary}',
+              style: TextStyle(fontSize: 16),
+            ),
+            Text(
+              'Coach: ${teamData.coachFirstName} ${teamData.coachLastName} (Experience: ${teamData.coachExperience} years)',
+              style: TextStyle(fontSize: 16),
+            ),
+          ],
+        ),
       ),
     );
   }
