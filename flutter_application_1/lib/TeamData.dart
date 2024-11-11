@@ -1,11 +1,10 @@
+import 'dart:convert';
+
 class TeamData {
-  final String teamId;
+  final String name;
   final String abbreviation;
   final String location;
-  final String name;
   final String displayName;
-  final String clubhouseUrl;
-  final String color;
   final String logoUrl;
   final String recordSummary;
   final String seasonSummary;
@@ -13,16 +12,12 @@ class TeamData {
   final String coachFirstName;
   final String coachLastName;
   final int coachExperience;
-
-  // Constructors
+  
   TeamData({
-    required this.teamId,
+    required this.name,
     required this.abbreviation,
     required this.location,
-    required this.name,
     required this.displayName,
-    required this.clubhouseUrl,
-    required this.color,
     required this.logoUrl,
     required this.recordSummary,
     required this.seasonSummary,
@@ -32,26 +27,42 @@ class TeamData {
     required this.coachExperience,
   });
 
-  // Create a TeamData instance from JSON data
+  // Factory constructor to create a TeamData object from the JSON response
   factory TeamData.fromJson(Map<String, dynamic> json) {
-    var teamJson = json['team'];
-    var coachJson = json['coach'][0]; 
+    // Make sure the data is being parsed correctly by accessing the 'team' key from the JSON response
+    var team = json['team'];
 
+    // Ensure all necessary fields are correctly accessed and parsed
     return TeamData(
-      teamId: teamJson['id'],
-      abbreviation: teamJson['abbreviation'],
-      location: teamJson['location'],
-      name: teamJson['name'],
-      displayName: teamJson['displayName'],
-      clubhouseUrl: teamJson['clubhouse'],
-      color: teamJson['color'],
-      logoUrl: teamJson['logo'],
-      recordSummary: teamJson['recordSummary'],
-      seasonSummary: json['season']['displayName'],
-      standingSummary: teamJson['standingSummary'],
-      coachFirstName: coachJson['firstName'],
-      coachLastName: coachJson['lastName'],
-      coachExperience: coachJson['experience'],
+      name: team['name'] ?? 'Unknown',
+      abbreviation: team['abbreviation'] ?? 'N/A',
+      location: team['location'] ?? 'Unknown',
+      displayName: team['displayName'] ?? 'N/A',
+      logoUrl: team['logo'] ?? '',
+      recordSummary: team['recordSummary'] ?? '0-0',
+      seasonSummary: team['seasonSummary'] ?? 'N/A',
+      standingSummary: team['standingSummary'] ?? 'N/A',
+      coachFirstName: json['coach']?[0]['firstName'] ?? 'Unknown',
+      coachLastName: json['coach']?[0]['lastName'] ?? 'Unknown',
+      coachExperience: json['coach']?[0]['experience'] ?? 0,
     );
   }
+
+  // Convert TeamData to JSON
+  Map<String, dynamic> toJson() {
+    return {
+      'name': name,
+      'abbreviation': abbreviation,
+      'location': location,
+      'displayName': displayName,
+      'logoUrl': logoUrl,
+      'recordSummary': recordSummary,
+      'seasonSummary': seasonSummary,
+      'standingSummary': standingSummary,
+      'coachFirstName': coachFirstName,
+      'coachLastName': coachLastName,
+      'coachExperience': coachExperience,
+    };
+  }
+  
 }

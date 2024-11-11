@@ -17,32 +17,24 @@ class Stats extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            // Display team logo
             Image.network(teamData.logoUrl),  
             SizedBox(height: 16),
-            Text(
-              'Team: ${teamData.name}',
-              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-            ),
-            Text(
-              'Abbreviation: ${teamData.abbreviation}',
-              style: TextStyle(fontSize: 16),
-            ),
-            Text(
-              'Location: ${teamData.location}',
-              style: TextStyle(fontSize: 16),
-            ),
-            Text(
-              'Record: ${teamData.recordSummary}',
-              style: TextStyle(fontSize: 16),
-            ),
-            Text(
-              'Standing: ${teamData.standingSummary}',
-              style: TextStyle(fontSize: 16),
-            ),
-            Text(
-              'Coach: ${teamData.coachFirstName} ${teamData.coachLastName} (Experience: ${teamData.coachExperience} years)',
-              style: TextStyle(fontSize: 16),
-            ),
+            
+          // Team name
+          Text(
+            'Team: ${teamData!.name}',  // Display team name
+            style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+          ),
+          Text(
+            'Wins: ${teamData!.recordSummary.split('-')[0]}',  // Display Wins
+            style: TextStyle(fontSize: 16),
+          ),
+          Text(
+            'Losses: ${teamData!.recordSummary.split('-')[1]}',  // Display Losses
+            style: TextStyle(fontSize: 16),
+          ),
+            
           ],
         ),
       ),
