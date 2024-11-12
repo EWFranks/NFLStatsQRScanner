@@ -19,8 +19,10 @@ class NflApiService {
 
     final url = Uri.parse('$apiUrl?id=$teamId'); 
 
+   
+    print('Request URL: $url');  // check url
+
     try {
-      
       isScanInProgress = true;
 
       final response = await http.get(
@@ -33,9 +35,9 @@ class NflApiService {
 
       if (response.statusCode == 200) {
         final Map<String, dynamic> data = json.decode(response.body);
-        print('Data fetched successfully: ${data.toString()}');  
-        // Return TeamData object parsed from the JSON response
-        print(data.toString());
+        print('Data fetched successfully: ${data.toString()}');
+
+        // Return TeamData object parsed
         return TeamData.fromJson(data);  
         
       } else if (response.statusCode == 429) {
@@ -54,7 +56,5 @@ class NflApiService {
       isScanInProgress = false; // Reset 
       return null;
     }
-    
   }
-  
 }

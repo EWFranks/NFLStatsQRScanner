@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
-import 'QR_Scanner.dart'; 
+import 'QR_Scanner.dart';
+import 'TeamData.dart';
+import 'Stats.dart';  
+  
 void main() {
   runApp(const MyApp());
 }
@@ -29,12 +32,13 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   int _selectedIndex = 0;
+  TeamData? _teamData;
 
-  static const List<Widget> _widgetOptions = <Widget>[
-    StatsScreen(),
-    QRCodeScanner(), 
-    PlusMinusScreen(),
-  ];
+  void _updateTeamData(TeamData data) {
+    setState(() {
+      _teamData = data;
+    });
+  }
 
   void _onItemTapped(int index) {
     setState(() {
@@ -49,8 +53,13 @@ class _MyHomePageState extends State<MyHomePage> {
         title: const Text('Flutter Demo'),
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
       ),
-      body: Center(
-        child: _widgetOptions.elementAt(_selectedIndex),
+      body: IndexedStack(
+        index: _selectedIndex,
+        children: [
+          StatsScreen(teamData: _teamData), // Updated to Stats
+          QRCodeScanner(onTeamDataScanned: _updateTeamData),
+          //const OddsScreen(), // Updated to Odds
+        ],
       ),
       bottomNavigationBar: BottomNavigationBar(
         items: const <BottomNavigationBarItem>[
@@ -70,34 +79,6 @@ class _MyHomePageState extends State<MyHomePage> {
         currentIndex: _selectedIndex,
         selectedItemColor: Colors.deepPurple,
         onTap: _onItemTapped,
-      ),
-    );
-  }
-}
-
-class StatsScreen extends StatelessWidget {
-  const StatsScreen({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return const Center(
-      child: Text(
-        'Stats Screen',
-        style: TextStyle(fontSize: 24),
-      ),
-    );
-  }
-}
-
-class PlusMinusScreen extends StatelessWidget {
-  const PlusMinusScreen({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return const Center(
-      child: Text(
-        'Plus/Minus Screen',
-        style: TextStyle(fontSize: 24),
       ),
     );
   }

@@ -12,7 +12,7 @@ class TeamData {
   final String coachFirstName;
   final String coachLastName;
   final int coachExperience;
-  
+
   TeamData({
     required this.name,
     required this.abbreviation,
@@ -29,22 +29,22 @@ class TeamData {
 
   // Factory constructor to create a TeamData object from the JSON response
   factory TeamData.fromJson(Map<String, dynamic> json) {
-    // Make sure the data is being parsed correctly by accessing the 'team' key from the JSON response
-    var team = json['team'];
+    
+    var team = json['team'] ?? {};
+    var coach = json['coach']?[0] ?? {}; 
 
-    // Ensure all necessary fields are correctly accessed and parsed
     return TeamData(
-      name: team['name'] ?? 'Unknown',
+      name: team['name'] ?? 'Unknown', 
       abbreviation: team['abbreviation'] ?? 'N/A',
       location: team['location'] ?? 'Unknown',
       displayName: team['displayName'] ?? 'N/A',
-      logoUrl: team['logo'] ?? '',
-      recordSummary: team['recordSummary'] ?? '0-0',
-      seasonSummary: team['seasonSummary'] ?? 'N/A',
-      standingSummary: team['standingSummary'] ?? 'N/A',
-      coachFirstName: json['coach']?[0]['firstName'] ?? 'Unknown',
-      coachLastName: json['coach']?[0]['lastName'] ?? 'Unknown',
-      coachExperience: json['coach']?[0]['experience'] ?? 0,
+      logoUrl: team['logo'] ?? '',  
+      recordSummary: team['recordSummary'] ?? '0-0',  
+      seasonSummary: team['seasonSummary'] ?? 'N/A',  
+      standingSummary: team['standingSummary'] ?? 'N/A',  
+      coachFirstName: coach['firstName'] ?? 'Unknown',  
+      coachLastName: coach['lastName'] ?? 'Unknown',    
+      coachExperience: coach['experience'] ?? 0,       
     );
   }
 
@@ -64,5 +64,9 @@ class TeamData {
       'coachExperience': coachExperience,
     };
   }
-  
+
+  @override
+  String toString() {
+    return 'TeamData{name: $name, abbreviation: $abbreviation, location: $location, displayName: $displayName, logoUrl: $logoUrl, recordSummary: $recordSummary, seasonSummary: $seasonSummary, standingSummary: $standingSummary, coachFirstName: $coachFirstName, coachLastName: $coachLastName, coachExperience: $coachExperience}';
+  }
 }

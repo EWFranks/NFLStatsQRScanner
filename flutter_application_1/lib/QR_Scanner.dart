@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 import 'nfl_api_service.dart';
-import 'TeamData.dart'; 
+import 'TeamData.dart';
 
 class QRCodeScanner extends StatefulWidget {
-  const QRCodeScanner({super.key});
+  final Function(TeamData) onTeamDataScanned;
+
+  const QRCodeScanner({super.key, required this.onTeamDataScanned});
 
   @override
   State<QRCodeScanner> createState() => _QRCodeScannerState();
@@ -12,12 +14,14 @@ class QRCodeScanner extends StatefulWidget {
 
 class _QRCodeScannerState extends State<QRCodeScanner> {
   String? scannedText;
-  TeamData? teamData;  
+  bool isScanInProgress = false;  // Flag to prevent immediate scanning 
+  final NflApiService nflApiService = NflApiService();
 
-  final NflApiService nflApiService = NflApiService();  
-
-  
   void _onDetect(BarcodeCapture barcodeCapture) async {
+    if (isScanInProgress) { // If a scan is in progress then ignore the others
+      return;
+    }
+
     final List<Barcode> barcodes = barcodeCapture.barcodes;
 
     for (var barcode in barcodes) {
@@ -25,20 +29,23 @@ class _QRCodeScannerState extends State<QRCodeScanner> {
         setState(() {
           scannedText = barcode.rawValue!;
         });
+        setState(() {
+          isScanInProgress = true;
+        });
 
-        // Fetch the team data from the API based on the scanned QR code
+        // Fetch team data from API with ID based on QR code
         final apiResult = await nflApiService.getTeamStats(scannedText!);
 
         if (apiResult != null) {
-          setState(() {
-            teamData = apiResult;  // Store the fetched data in TeamData
-          });
-        } else {
-          print('Failed to fetch team data');
-          setState(() {
-            teamData = null;  // reset
-          });
+          widget.onTeamDataScanned(apiResult); // Passes data
         }
+
+        // Disable scanning for 15 seconds after the scan
+        await Future.delayed(Duration(seconds: 15));
+
+        setState(() {
+          isScanInProgress = false;
+        });
       }
     }
   }
@@ -53,28 +60,13 @@ class _QRCodeScannerState extends State<QRCodeScanner> {
         children: [
           Expanded(
             child: MobileScanner(
-              onDetect: _onDetect,  
+              onDetect: _onDetect,
             ),
           ),
           Padding(
             padding: const EdgeInsets.all(16.0),
-            child: teamData != null
-                ? Column(
-                    children: [
-                      Text(
-                        'Team: ${teamData!.name}',  // Display team name
-                        style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                      ),
-                      Text(
-                        'Wins: ${teamData!.recordSummary.split('-')[0]}',  // Display Wins
-                        style: TextStyle(fontSize: 16),
-                      ),
-                      Text(
-                        'Losses: ${teamData!.recordSummary.split('-')[1]}',  // Display Losses
-                        style: TextStyle(fontSize: 16),
-                      ),
-                    ],
-                  )
+            child: scannedText != null
+                ? Text('Scanned: $scannedText')
                 : const Text('Scan a code to see team statistics'),
           ),
         ],
