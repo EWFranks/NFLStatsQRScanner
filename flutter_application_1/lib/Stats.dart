@@ -2,13 +2,16 @@ import 'package:flutter/material.dart';
 import 'TeamData.dart';
 
 class StatsScreen extends StatelessWidget {
-  final TeamData? teamData; // Passes data from MyHomePage
+  final TeamData? teamData; // Passes data
 
   const StatsScreen({Key? key, required this.teamData}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        title: const Text('Team Stats'),
+      ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: teamData != null

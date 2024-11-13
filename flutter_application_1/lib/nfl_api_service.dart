@@ -11,19 +11,21 @@ class NflApiService {
 
   // Fetch data on teams via team ID
   Future<TeamData?> getTeamStats(String teamId) async {
-    
     if (isScanInProgress) {
       print('Please wait for 15 seconds before scanning again.');
       return null; 
-    } 
+    }
 
     final url = Uri.parse('$apiUrl?id=$teamId'); 
 
-   
-    print('Request URL: $url');  // check url
+    print('Request URL: $url');  
 
     try {
       isScanInProgress = true;
+
+      Future.delayed(Duration(seconds: 15), () {
+        isScanInProgress = false; // resets for multiple scans
+      });
 
       final response = await http.get(
         url,

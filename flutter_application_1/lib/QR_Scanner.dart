@@ -28,8 +28,6 @@ class _QRCodeScannerState extends State<QRCodeScanner> {
       if (barcode.rawValue != null) {
         setState(() {
           scannedText = barcode.rawValue!;
-        });
-        setState(() {
           isScanInProgress = true;
         });
 
@@ -39,9 +37,6 @@ class _QRCodeScannerState extends State<QRCodeScanner> {
         if (apiResult != null) {
           widget.onTeamDataScanned(apiResult); // Passes data
         }
-
-        // Disable scanning for 15 seconds after the scan
-        await Future.delayed(Duration(seconds: 15));
 
         setState(() {
           isScanInProgress = false;
