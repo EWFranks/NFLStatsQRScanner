@@ -18,7 +18,7 @@ class _QRCodeScannerState extends State<QRCodeScanner> {
   final NflApiService nflApiService = NflApiService();
 
   void _onDetect(BarcodeCapture barcodeCapture) async {
-    if (isScanInProgress) { // If a scan is in progress then ignore the others
+    if (isScanInProgress) { // If a scan is in progress then ignore immediate scanning
       return;
     }
 

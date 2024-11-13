@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'TeamData.dart';
 
 class StatsScreen extends StatelessWidget {
-  final TeamData? teamData; // Passes data
+  final List<TeamData> scannedTeams;
 
-  const StatsScreen({Key? key, required this.teamData}) : super(key: key);
+  const StatsScreen({super.key, required this.scannedTeams});
 
   @override
   Widget build(BuildContext context) {
@@ -12,44 +12,44 @@ class StatsScreen extends StatelessWidget {
       appBar: AppBar(
         title: const Text('Team Stats'),
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: teamData != null
-            ? Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Image.network(teamData!.logoUrl),
-                  const SizedBox(height: 16),
-                  Text(
-                    'Team: ${teamData!.name}',
-                    style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+      body: scannedTeams.isEmpty
+          ? const Center(child: Text('No team data scanned yet.'))
+          : ListView.builder(
+              itemCount: scannedTeams.length,
+              itemBuilder: (context, index) {
+                final team = scannedTeams[index];
+                return Card(
+                  margin: const EdgeInsets.all(8.0),
+                  child: Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          team.displayName,
+                          style: const TextStyle(
+                              fontSize: 20, fontWeight: FontWeight.bold),
+                        ),
+                        const SizedBox(height: 8),
+                        Image.network(
+                          team.logoUrl,
+                          height: 50,
+                          errorBuilder: (context, error, stackTrace) =>
+                              const Icon(Icons.error),
+                        ),
+                        const SizedBox(height: 8),
+                        Text('Location: ${team.location}'),
+                        Text('Record: ${team.recordSummary}'),
+                        Text('Season Summary: ${team.seasonSummary}'),
+                        Text('Standing: ${team.standingSummary}'),
+                        Text(
+                            'Coach: ${team.coachFirstName} ${team.coachLastName} (${team.coachExperience} years)'),
+                      ],
+                    ),
                   ),
-                  Text(
-                    'Location: ${teamData!.location}',
-                    style: const TextStyle(fontSize: 16),
-                  ),
-                  Text(
-                    'Record: ${teamData!.recordSummary}',
-                    style: const TextStyle(fontSize: 16),
-                  ),
-                  Text(
-                    'Standing: ${teamData!.standingSummary}',
-                    style: const TextStyle(fontSize: 16),
-                  ),
-                  Text(
-                    'Coach: ${teamData!.coachFirstName} ${teamData!.coachLastName}',
-                    style: const TextStyle(fontSize: 16),
-                  ),
-                  Text(
-                    'Experience: ${teamData!.coachExperience} years',
-                    style: const TextStyle(fontSize: 16),
-                  ),
-                ],
-              )
-            : const Center(
-                child: Text('Scan a QR code to display team stats'),
-              ),
-      ),
+                );
+              },
+            ),
     );
   }
 }

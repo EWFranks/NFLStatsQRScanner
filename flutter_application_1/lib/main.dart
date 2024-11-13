@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'QR_Scanner.dart';
 import 'TeamData.dart';
-import 'Stats.dart';  
-  
+import 'Stats.dart';
+
 void main() {
   runApp(const MyApp());
 }
@@ -32,11 +32,11 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   int _selectedIndex = 0;
-  TeamData? _teamData;
+  List<TeamData> _scannedTeams = [];
 
-  void _updateTeamData(TeamData data) {
+  void _addTeamData(TeamData data) {
     setState(() {
-      _teamData = data;
+      _scannedTeams.add(data);  // Add new scan result to the list
     });
   }
 
@@ -56,9 +56,8 @@ class _MyHomePageState extends State<MyHomePage> {
       body: IndexedStack(
         index: _selectedIndex,
         children: [
-          StatsScreen(teamData: _teamData), // Updated to Stats
-          QRCodeScanner(onTeamDataScanned: _updateTeamData),
-          //const OddsScreen(), // Updated to Odds
+          StatsScreen(scannedTeams: _scannedTeams), // Passes list of scanned teams
+          QRCodeScanner(onTeamDataScanned: _addTeamData),
         ],
       ),
       bottomNavigationBar: BottomNavigationBar(
@@ -70,10 +69,6 @@ class _MyHomePageState extends State<MyHomePage> {
           BottomNavigationBarItem(
             icon: Icon(Icons.qr_code_scanner),
             label: 'QR Scanner',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.add),
-            label: 'Plus/Minus',
           ),
         ],
         currentIndex: _selectedIndex,
