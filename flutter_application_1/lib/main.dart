@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'QR_Scanner.dart';
 import 'TeamData.dart';
 import 'Stats.dart';
+import 'nfl_api_service.dart';
 
 void main() {
   runApp(const MyApp());
@@ -13,7 +14,6 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
@@ -32,14 +32,46 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   int _selectedIndex = 0;
-  List<TeamData> _scannedTeams = [];
+  List<TeamData> _scannedTeams = []; // Initialize as an empty list
+  final NflApiService nflApiService = NflApiService(); 
+  bool _isLoading = true; // Track loading state
 
-  void _addTeamData(TeamData data) {
-    setState(() {
-      _scannedTeams.add(data);  // Add new scan result to the list
-    });
+  @override
+  void initState() {
+    super.initState();
+    _loadSavedTeams(); // Load saved teams on startup
   }
 
+  Future<void> _loadSavedTeams() async {
+    try {
+      print('Fetching saved teams from the backend...');
+      List<TeamData> savedTeams = await nflApiService.fetchSavedTeams();
+      setState(() {
+        _scannedTeams = savedTeams; // Update the local state with the fetched teams
+        _isLoading = false; // loading complete
+      });
+      print('Teams loaded successfully: $_scannedTeams'); 
+    } catch (e) {
+      setState(() {
+        _isLoading = false; // Stop loading on error
+      });
+      print('Error loading saved teams: $e');
+    }
+  }
+
+  void _addTeamData(TeamData data) async {
+    setState(() {
+      _scannedTeams.add(data); // Add the new team locally
+    });
+    try {
+      await nflApiService.uploadTeamList(_scannedTeams); // Sync the updated list to the backend
+      print('Team data synced successfully!');
+    } catch (e) {
+      print('Error syncing team data: $e');
+    }
+  }
+
+  // Handle navigation bar taps
   void _onItemTapped(int index) {
     setState(() {
       _selectedIndex = index;
@@ -50,16 +82,18 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Flutter Demo'),
+        title: const Text('NFLStatsQRScanner'),
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
       ),
-      body: IndexedStack(
-        index: _selectedIndex,
-        children: [
-          StatsScreen(scannedTeams: _scannedTeams), // Passes list of scanned teams
-          QRCodeScanner(onTeamDataScanned: _addTeamData),
-        ],
-      ),
+      body: _isLoading
+          ? const Center(child: CircularProgressIndicator()) 
+          : IndexedStack(
+              index: _selectedIndex,
+              children: [
+                StatsScreen(scannedTeams: _scannedTeams), // Display fetched teams in the stats screen
+                QRCodeScanner(onTeamDataScanned: _addTeamData), // QR Scanner screen to add teams
+              ],
+            ),
       bottomNavigationBar: BottomNavigationBar(
         items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(

@@ -1,0 +1,23 @@
+{
+  "teams": [
+    {
+      "team": {
+        "name": "Steelers",
+        "abbreviation": "PIT",
+        "location": "Pittsburgh",
+        "displayName": "Pittsburgh Steelers",
+        "logo": "https://a.espncdn.com/i/teamlogos/nfl/500/pit.png",
+        "recordSummary": "8-2",
+        "seasonSummary": "2024",
+        "standingSummary": "1st in AFC North"
+      },
+      "coach": [
+        {
+          "firstName": "Mike",
+          "lastName": "Tomlin",
+          "experience": 17
+        }
+      ]
+    }
+  ]
+}
